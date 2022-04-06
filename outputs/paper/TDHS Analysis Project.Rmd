@@ -12,7 +12,7 @@ bibliography: ref_list.bib
 
 Thailand Demographic and Health Survey, 1987 [@DHS] is the first time in the history that the West has conducted a comprehensive health questionnaire in Thailand. The questionnaire itself mainly focuses on health, fertility, family choices, etc., and aims to consider and analyze the health and living conditions of Thai people around the 1980s. In the 1980s, modern medicine and drug research were very different from what we are living in today, so this statistical report has a strong historical reference in our view today. By studying and analyzing the health choices of people in less developed Asian countries decades ago, we can further understand the impact of medical and pharmaceutical advances on human and social changes.
 
-In our study, we specifically extracted TDHS table at page 75 in TDHS[@DHS] (table 4.8) about women's contraceptive measures in that year. Contraception and family planning are unavoidable problems faced by every family, so research on this aspect is of particular social value. We believe that research on this, combined with the social and cultural background at that time, will help us restore some of the social environment and people's living conditions in Thailand at that time. On the other hand, the gap between some data and today's contraceptive habits can also reflect changes brought about by technological advances; for example, advances in materials science have brought thinner artificial latex, making condoms too popular in the past two decades. Ascension, and in the 1980s, birth control pills were more popular than condoms. The research would be conducted using R-code [@citeR] as a R markdown project and the respected repository will be linked with Github. ^[Github: https://github.com/jinlixuokok/STA304-paper4.git]
+In our study, we specifically extracted TDHS table at page 75 in TDHS[@DHS] (table 4.8) about women's contraceptive measures in that year. Contraception and family planning are unavoidable problems faced by every family, so research on this aspect is of particular social value. We believe that research on this, combined with the social and cultural background at that time, will help us restore some of the social environment and people's living conditions in Thailand at that time. On the other hand, the gap between some data and today's contraceptive habits can also reflect changes brought about by technological advances; for example, advances in materials science have brought thinner artificial latex, making condoms too popular in the past two decades. Ascension, and in the 1980s, birth control pills were more popular than condoms. The research would be conducted using R-code [@citeR] as a R markdown project and the respected repository will be linked with Github. ^[Github: https://github.com/jinlixuokok/Contraceptive-Thailand-1987.git]
 
 Before that, we firstly conducted a simulation analysis of the overall data through the simulator by using tidyverse [@tidyverse] to draw preliminary conclusions and research. We believe that this method will help us to obtain more helpful and constructive conclusions in combination with our subsequent data operations.
 In summary, we take a portion of the graphs from the TDHS 1987 study, statistically digitize the graphs, and analyze them on top of that. In this process, we will analyze this data in detail, and combine it with other parts of TDHS 1987, aiming to analyze in detail the social state of Thailand at that time and infer the reasons for the selection of data. The entire research process will be carried out in a reproducible manner and linked in GitHub for further research by interested individuals or groups.
@@ -23,7 +23,7 @@ At the end of the introduction, here we give a general introduction to the diffe
 library(readr)
 library(tidyverse)
 library(reshape2)
-cleaned_data <- read_csv("cleaned_data.csv")
+cleaned_data <- read_csv("/cloud/project/outputs/data/cleaned_data.csv")
 #shifting the columns into rows and vice versa, to better draw graphs later.
 newdata <- melt(cleaned_data, id.vars=c("Main"),variable.name = "Methods", value.name="per")
 ```
@@ -97,7 +97,7 @@ Analysis and research on contraceptive measures, infant mortality and other data
 \newpage
 # Appendix
 
-```{r child='datasheet_template.Rmd'}
+```{r child='/cloud/project/inputs/data/datasheet_template.Rmd'}
 
 ```
 
