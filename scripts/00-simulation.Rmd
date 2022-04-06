@@ -1,0 +1,61 @@
+---
+title: "00-simulation"
+author: "Yichen Duo & Jinli Xu"
+date: '2022-04-03'
+output: pdf_document
+---
+```{r}
+
+```
+
+# Simulation data
+
+```{r}
+library(tidyverse)
+#Set the data id, total simulated 10000 observation
+obser <- 1:10000
+#set the variabble area
+area <- sample("Thailand", size=10000,replace = TRUE)
+
+#set the methods of contraceptive currently use
+Current_use <- sample(c("Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization",
+                        "Male sterilization","Norplant","Periodic abstinence","Withdrawal","No","Other"), 
+                  size = 10000, 
+                  prob = c(0.20,0.072,0.092,0.0,1.2,22.4,5.5,0.0,1.0,0.9, 0.325,0.001), 
+                  replace = TRUE)
+
+#set the number of children
+num_child <- sample(c("0","1","2","3","4+"), 
+                  size = 10000, 
+                  prob = c(0.119,0.227,0.286,0.174,0.194), 
+                  replace = TRUE)
+
+# set varibale urban-rural ressidence
+Urban_rural <- sample(c("Urban","Rural"), 
+                  size = 10000, 
+                  prob = c(0.185,1-0.185), 
+                  replace = TRUE)
+  
+#set up the Region of living.
+Region <- sample(c("North","Northeast","Central","South","Bangkok"), 
+                  size = 10000, 
+                  prob = c(0.209,0.349,0.210,0.122,0.11), 
+                  replace = TRUE)
+
+#set up the education situation of women
+Education <- sample(c("No education","Primary","Secondary","Higher"), 
+                  size = 10000, 
+                  prob = c(0.080,0.793,0.082,0.045), 
+                  replace = TRUE)
+
+#Set the religion of people 
+Religion <- sample(c("Buddhist","Islam","Other"),
+                   size = 10000,
+                   prob=c(0.927,0.052,1-0.052-0.927),
+                   replace = TRUE)
+
+
+dt <- tibble(obser,Current_use,area,num_child,Urban_rural,Region,Education,Religion)
+view(dt)
+```
+

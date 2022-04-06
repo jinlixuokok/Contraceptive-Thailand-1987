@@ -1,0 +1,39 @@
+---
+title: "02-clean_and_prepare_data"
+author: "Yichen Duo & Jinli Xu"
+date: '2022-04-02'
+output: pdf_document
+---
+
+```{r}
+library(tidyverse)
+library(readr)
+raw_data <- read_csv("raw_data.csv")
+View(raw_data)
+# find out error in the data and fix them
+raw_data$`Total percent`[raw_data$`Total percent` == "10(3"] <- 100
+raw_data$`Total percent`[raw_data$`Total percent` == "1(30"] <- 100
+# Set all data to digital
+clean_data <- raw_data|> mutate_at(vars(`Total percent`), ~as.integer(.))
+view(clean_data)
+
+
+```
+
+
+```{r}
+library(pointblank)
+# rename some of the columns for more convenient in checking class
+checkcheck <- clean_data |> rename("currently" = "Currently using any method","Va"="Vaginal methods","Fe"="Female sterilization","Male" = "Male sterilization","Periodic" = "Periodic abstinence", "Not" = "Not currently using", "Total"="Total percent","Weight"="Weighted number of women")
+#use point blank to check the all of the variables in the table have the fitting class.
+check <- create_agent(tbl = checkcheck) |> col_is_character(columns = vars(Main,area)) |>
+  col_is_factor(columns = vars(IUD,Pill,Injection,Condom,currently,Va,Fe,Male,Periodic,Not,Norplant,Withdrawal,Other))|>
+  col_is_integer(columns = vars(page,Total,Weight))|>
+  interrogate()
+check
+
+#biuld the data file for clean data
+write_csv(clean_data,"cleaned_data.csv")
+
+```
+

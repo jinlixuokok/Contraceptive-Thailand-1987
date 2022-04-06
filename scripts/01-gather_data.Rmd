@@ -1,0 +1,128 @@
+---
+title: "STA304"
+author: "Yichen Duo & Jinli Xu"
+date: '2022-03-30'
+output: pdf_document
+---
+
+```{r}
+library(janitor)
+library(pdftools)
+library(tidyverse)
+library(stringi)
+all_content <- pdf_text("Thailand DHS.pdf")
+# take page 75 
+page75 <- stri_split_lines(all_content[[75]])[[1]]
+#delete all empty line
+page75 <- page75[page75 != " "]
+# grab the explanation of the table
+explain <- page75[1] |> str_squish()
+#covert explain to tibble
+explain <- tibble(all = explain)
+#replace the error in explain
+explain <- explain |> mutate(all= str_replace(all,"Table 4.8 Percent distribution of currently married wunam aged 15-44 according to the contraceptive method enrramtly used, by selected h a c ~","Table 4.8 Percent distribution of currently married wunam aged 15-44 according to the contraceptive method enrramtly used, by selected background characteristics"))
+area <- "Thailand"
+#separate the big table into 5 smaller block, with only data, without header and footer
+table1 <- page75[8:12]
+table2 <- page75[14:15]
+table3 <- page75[16:20]
+table4 <- page75[22:25]
+table5 <- page75[27:28]
+# the total percentage of different kind contraceptive methods.
+total <- page75[29]
+
+# convert into tibble
+table1 <- tibble(all = table1)
+table2 <- tibble(all = table2)
+table3 <- tibble(all = table3)
+table4 <- tibble(all = table4)
+table5 <- tibble(all = table5)
+total <- tibble(all = total)
+
+#clean the table 1 by delete excess space and replace the typos
+table = table1 |> mutate(all = str_squish(all))
+
+table1c <- table1 |> mutate_all(~str_remove_all(.,",")) |>
+  mutate(all = str_squish(all)) |>
+  mutate(all = str_replace(all,"O","0")) |>
+  mutate(all = str_replace(all,"I","1")) |>
+  mutate(all = str_replace(all,"i","1")) |>
+  mutate(all = str_replace(all,"1.i","1.1")) |>
+  mutate(all = str_replace(all,"0.i","0.1")) |>
+  mutate(all = str_replace(all,"2/.1","21.1")) |>
+  mutate(all = str_replace(all,"0.I","0.1")) |>
+  separate(col = all, into = c("Main","Currently using any method","Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization","Male sterilization","Norplant","Periodic abstinence","Withdrawal","Other","Not currently using","Total percent","Weighted number of women"),
+           sep = " ", remove = TRUE, fill = "right",extra = "drop")
+
+
+#clean the table 2 by delete excess space and replace the typos
+table = table2 |> mutate(all = str_squish(all))
+table2c <- table2 |> mutate_all(~str_remove_all(.,",")) |>
+  mutate(all = str_squish(all)) |>
+  mutate(all = str_replace(all,"O","0")) |>
+  mutate(all = str_replace(all,"i","1")) |>
+  mutate(all = str_replace(all,"i.I","1.1")) |>
+  mutate(all = str_replace(all,"0.i","0.1")) |>
+  mutate(all = str_replace(all,"0.I","0.1")) |>
+  mutate(all = str_replace(all,"I00","100")) |>
+  separate(col = all, into = c("Main","Currently using any method","Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization","Male sterilization","Norplant","Periodic abstinence","Withdrawal","Other","Not currently using","Total percent","Weighted number of women"),
+           sep = " ", remove = TRUE, fill = "right",extra = "drop")
+
+
+#clean the table 3 by delete excess space and replace the typos
+table3c <- table3 |> mutate(all = str_squish(all)) |>
+  mutate(all = str_remove(all,"to")) |>
+  mutate_all(~str_remove_all(.,",")) |>
+  mutate(all = str_squish(all)) |>
+  mutate(all = str_replace(all,"i","1")) |>
+  mutate(all = str_replace(all,"O","0")) |>
+  mutate(all = str_replace(all,"I","1")) |>
+  mutate(all = str_replace(all,"0.i","0.1")) |>
+  mutate(all = str_replace(all,"i00","100")) |>
+  mutate(all = str_replace(all,"I00","100")) |>
+  separate(col = all, into = c("Main","Currently using any method","Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization","Male sterilization","Norplant","Periodic abstinence","Withdrawal","Other","Not currently using","Total percent","Weighted number of women"),
+           sep = " ", remove = TRUE, fill = "right",extra = "drop")
+
+
+#clean the table 4 by delete excess space and replace the typos
+
+table4c <- table4 |> mutate_all(~str_remove_all(.,",")) |>
+  mutate(all = str_squish(all)) |>
+  mutate(all = str_replace(all,"NO education","No_education")) |>
+  mutate(all = str_replace(all,"O.0","0.0")) |>
+  mutate(all = str_replace(all,"0.i","0.1")) |>
+  mutate(all = str_replace(all,"i00","100")) |>
+  mutate(all = str_replace(all,"I00","100")) |>
+  separate(col = all, into = c("Main","Currently using any method","Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization","Male sterilization","Norplant","Periodic abstinence","Withdrawal","Other","Not currently using","Total percent","Weighted number of women"),
+           sep = " ", remove = TRUE, fill = "right",extra = "drop")
+
+#clean the table 5 by delete excess space and replace the typos
+
+table5c <- table5 |> mutate_all(~str_remove_all(.,",")) |>
+  mutate(all = str_squish(all)) |>
+  mutate(all = str_replace(all,"i0.0","10.0")) |>
+  mutate(all = str_replace(all,"0.I","0.1")) |>
+  mutate(all = str_replace(all,"I00","100")) |>
+  separate(col = all, into = c("Main","Currently using any method","Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization","Male sterilization","Norplant","Periodic abstinence","Withdrawal","Other","Not currently using","Total percent","Weighted number of women"),
+           sep = " ", remove = TRUE, fill = "right",extra = "drop")
+
+#clean the total data by delete excess space and replace the typos
+totalc <- total |> mutate_all(~str_remove_all(.,",")) |>
+  mutate(all = str_squish(all)) |>
+  mutate(all = str_replace(all,"O","0")) |>
+  mutate(all = str_replace(all,"556J","5561")) |>
+  separate(col = all, into = c("Main","Currently using any method","Pill","IUD","Injection","Vaginal methods","Condom","Female sterilization","Male sterilization","Norplant","Periodic abstinence","Withdrawal","Other","Not currently using","Total percent","Weighted number of women"),
+           sep = " ", remove = TRUE, fill = "right",extra = "drop")
+
+```
+
+
+```{r}
+#combine all small table togethor
+large_table <- rbind(table1c,table2c,table3c,table4c,table5c,totalc)
+large_table$area <- area
+large_table$page <- 75
+#biuld the data file
+write_csv(large_table,"raw_data.csv")
+```
+

@@ -1,0 +1,106 @@
+---
+title: "Data Visualization and Analysis of Thailand Women's Contraceptive Methods Preference in 1987"
+subtitle: "A Data Analysis Study Based on TDHS, 1987"
+author: "Yichen Duo & Jinli Xu"
+date: '2022-04-03'
+output: pdf_document
+abstract: "This article uses the data from the 1987 Thailand Demographic and Health Survey (hereinafter referred to as TDHS), and extracts Table 4.8--Percent distribution of currently married woman aged 15-44 according to the contraceptive method currently used, by selected characteristics on page 75. , classify and integrate the data in the table through statistical methods, aiming to restore the basis of the research content in the paper, and further combine the social background and cultural environment at that time to analyze the research results and draw conclusions."
+after_body: datasheet_template.Rmd
+bibliography: ref_list.bib
+---
+# Introduction
+
+Thailand Demographic and Health Survey, 1987 [@DHS] is the first time in the history that the West has conducted a comprehensive health questionnaire in Thailand. The questionnaire itself mainly focuses on health, fertility, family choices, etc., and aims to consider and analyze the health and living conditions of Thai people around the 1980s. In the 1980s, modern medicine and drug research were very different from what we are living in today, so this statistical report has a strong historical reference in our view today. By studying and analyzing the health choices of people in less developed Asian countries decades ago, we can further understand the impact of medical and pharmaceutical advances on human and social changes.
+
+In our study, we specifically extracted TDHS table at page 75 in TDHS[@DHS] (table 4.8) about women's contraceptive measures in that year. Contraception and family planning are unavoidable problems faced by every family, so research on this aspect is of particular social value. We believe that research on this, combined with the social and cultural background at that time, will help us restore some of the social environment and people's living conditions in Thailand at that time. On the other hand, the gap between some data and today's contraceptive habits can also reflect changes brought about by technological advances; for example, advances in materials science have brought thinner artificial latex, making condoms too popular in the past two decades. Ascension, and in the 1980s, birth control pills were more popular than condoms. The research would be conducted using R-code [@citeR] as a R markdown project and the respected repository will be linked with Github. ^[Github: https://github.com/jinlixuokok/STA304-paper4.git]
+
+Before that, we firstly conducted a simulation analysis of the overall data through the simulator by using tidyverse [@tidyverse] to draw preliminary conclusions and research. We believe that this method will help us to obtain more helpful and constructive conclusions in combination with our subsequent data operations.
+In summary, we take a portion of the graphs from the TDHS 1987 study, statistically digitize the graphs, and analyze them on top of that. In this process, we will analyze this data in detail, and combine it with other parts of TDHS 1987, aiming to analyze in detail the social state of Thailand at that time and infer the reasons for the selection of data. The entire research process will be carried out in a reproducible manner and linked in GitHub for further research by interested individuals or groups.
+
+At the end of the introduction, here we give a general introduction to the different contraceptive methods analyzed in this article. Birth control pills and injections are a common cyclic hormonal drug, first invented around 1950, as a widely used low-risk, high-efficiency drug. After being introduced into several Asian countries in the 1980s, it has created a lot of profits for pharmaceutical companies and local pharmacies. IUD is an intrauterine device, a removable semi-permanent intrauterine implant that releases copper ions to interfere with sperm implantation for contraception; this method is highly reliable, but it is prone to a series of side effects in the medical environment of the last century. Condoms are a common, primitive, and effective contraceptive method, but in the last century when material science was not yet developed, condoms were usually made of rubber, which had a poor user experience and was prone to allergic reactions. Sterilization is a permanent, almost irreversible operation that permanently renders a person infertile by ligating the fallopian tubes or vas deferens.
+
+```{r message=FALSE,echo=FALSE,warning=FALSE,include=FALSE}
+library(readr)
+library(tidyverse)
+library(reshape2)
+cleaned_data <- read_csv("cleaned_data.csv")
+#shifting the columns into rows and vice versa, to better draw graphs later.
+newdata <- melt(cleaned_data, id.vars=c("Main"),variable.name = "Methods", value.name="per")
+```
+
+# Data
+
+The data in our study were themselves produced in the TDHS[@DHS] section of the specific study on contraceptive method choice among married Thai women aged 15-44. The data itself is broken down into several categories for research, including residential area (urban or rural), number of children, residential address, education level, and religious beliefs (mainly Buddhist and Islamic).
+
+Intuitive data analysis can reflect that most of the respondents live in the countryside, have a lower level of education, and the main local religion is Buddhism. These facts honestly reflect some of the local social conditions in Thailand in the 1980s. As a less developed Asian country where Buddhism is prevalent, Thailand's native education in the 1980s was low per capita, and as an agricultural country, the proportion of the urban population was small.
+
+This basic data analysis will help us to deeply understand the meaning of the data itself and will be further analyzed in the following sections. Besides that, we then need to understand the different methods of listing contraceptive methods. Pills are generally new in the 1980s, while extremely effective for contraception, it was only introduced into Thailand around 1980s as many pharmacy companies were trying to profit off it. As a very primitive but effective means of contraception, condoms were not very popular around 1980 due to material limitations. As a once-for-all contraceptive method, sterilization is not often used due to its irreversibility in the time and the limitation of some religious beliefs. In general, we will conduct specific and detailed analysis in the following data analysis and results section and insert the charts we have built to help data visualization and understanding.
+
+# Methodology
+
+Our method first simulates the random distribution of the data through the simulator by using tidyverse[@tidyverse], and initially analyzes the data set through this method. Next, we created an RMD script, 01-gather_data, to collect preliminary information on charts 4-8 by using tools of pdftools[@pdf], janitor[@janitor]; Function of Stringi[@string] was also used to further manually adjust the read data from THDS. In this process, we have carried out preliminary sorting and manual screening of the text conversion itself to ensure the readability and recognition of the data conversion. The next step is to create an RMD script for clean and prepare data, 02-clean_and_prepare_data. In this step, we used function of readr[@readr] to read the raw data generated by the last step; tidyverse[@tidyverse] and blankplank[@pb] were also used in this part. The main function of this script is to collect and further organize the data identified in the first step to create a chart.
+
+After that, we produced a raw data called raw_data.csv, which has been sorted, cleaned, and aggregated to fully reflect the data set in Figures 4-8 in TDHS, which we will use for further research. and analysis and use this dataset for data visualization. In this step, we used an important tool of Reshape[@reship] to shift the columns of the data into rows for graph generating step.
+
+# Result and Anaylize
+
+After cleaning and summarizing the data in to raw_data.csv, we then proceed to analyze the data by grouping them into different graphs, depending on their scopes of focus. Several conclusions on graphs’ topics would be drawn in this section.
+
+```{r 101,fig.cap="Percentage of different methods with group by living area",message=FALSE,echo=FALSE,warning=FALSE}
+new <- newdata |> filter(Main == "Urban" | Main == "Rural") |> filter(Methods != "page" & Methods != "area" & Methods != "Weighted number of women" & Methods != "Total percent" & Methods != "Currently using any method" ) |> mutate(per = as.numeric(per))
+
+new |> ggplot(aes(x = per, y = Methods,fill=Main)) + geom_col(aes(x = per, y = Methods,fill = Main),position = "dodge",show_col_types = FALSE)+ theme_classic() + labs(x="Percentage(%)",y = "Methods", fill = "Living Area")
+
+```
+This graph is visualizing on the differences of percentage of contraceptive methods used by women in Thailand between people living in urban and rural area. While most of the population in Thailand lived in Rural area, as we discussed before in the Data section, the preference of choices between different contraceptive methods used is significant and visible, and shown clearly in the graph above. For people who are not using any contraceptive method and using withdraw, the difference is minor; this is believed to mainly caused by the fact that withdraw method requires minimum resources—it is naturally taught and requires no material assistance. While interestingly, condoms are much more widely used in urban area than it is used in the rural area, and this is caused by that fact that in a less developed country like Thailand, acquiring condoms could have been difficult in its vast rural area. This assumption is further supported by the fact that semi-permanent method like Injection and IUD was more popular in rural area, as those method would be easily performed in a local clinic or pharmacy and requires no future attendance.
+
+```{r 102,fig.cap="Percentage of different methods with group by Education level",message=FALSE,echo=FALSE,warning=FALSE}
+new1 <- newdata |> filter(Main == "No_education" | Main == "Primary" | Main == "Secondary" | Main == "Higher") |> filter(Methods != "page" & Methods != "area" & Methods != "Weighted number of women" & Methods != "Total percent" & Methods != "Currently using any method" ) |> mutate(per = as.numeric(per))
+
+new1 |> ggplot(aes(x = per, y = Methods,fill=Main)) + geom_col(aes(x = per, y = Methods,fill = Main),position = "dodge")+ theme_classic() + labs(x="Percentage(%)",y = "Methods", fill = "Education Level")
+```
+This graph focuses on preference of contraceptive methods used by different group of women, grouping by their education level, from no-education to higher than secondary. We first need to understand in Thailand around 1980s, female rights were not widely recognized, and educations were scarce resources that hardly distributed to female individuals. In general, it is rare to find an educated woman in Thailand back then. 
+
+Back to the graph itself, we see a vast difference in the contraceptive method of Periodic Abstinence, a method required the noting and understanding of female repopulation system and menstrual period, used between educated and uneducated individuals. This is mainly caused by the complicated nature of this method, and it proves that lower level of education in Thailand back then provided only limited knowledge of female repopulation system.
+
+Interestingly, Pills were popular among females with intermediate to high level of education, while it is not popular among people with lower or higher education. This could be caused by that people with low education would hardly receive any knowledge about contraceptive pills while highly educated individuals received certain knowledge that contraceptive pills back then could be somewhat harmful and has some serious side effects. Contraceptive pills were massively introduced into Thailand by pharmacies and local clinics as a significant way of gaining profits back then; though proven effective, its massive spread in Thailand and some other less developed countries in Asia like India did cause some side effects.
+
+
+```{r 103,fig.cap="Percentage of different methods with group by religion",message=FALSE,echo=FALSE,warning=FALSE}
+new3 <- newdata |> filter(Main == "Islam" | Main == "Buddhist") |> filter(Methods != "page" & Methods != "area" & Methods != "Weighted number of women" & Methods != "Total percent" & Methods != "Currently using any method" ) |> mutate(per = as.numeric(per))
+
+new3 |> ggplot(aes(x = per, y = Methods,fill=Main)) + geom_col(aes(x = per, y = Methods,fill = Main),position = "dodge")+ theme_classic() + labs(x="Percentage(%)",y = "Methods", fill = "Religion")
+```
+This image focuses primarily on visualizing differences in contraceptive choices among women of different religious beliefs. First of all, we need to understand that Thailand is a monarchical country where religion has great influence in society. Buddhism is of great importance in Thailand. In Buddhist scriptures, abortion is an extremely serious crime, equivalent to killing. So, for Buddhists, the majority of Thailand's population, abortion is not an acceptable option; in this case, contraception is especially important. On the other hand, Thailand also has many Muslim groups, and in more traditional Muslim teachings, women bear a very important or inescapable reproductive responsibility. In traditional Muslim families, women have a low status and usually have no voice. As a result, Muslim women are generally less likely to use effective contraception.
+
+In this picture we can see multiple examples that support the above point. First of all, the rate of Muslim women not using any contraceptives is much higher than that of Buddhists. Among Muslim women who use contraceptives, the withdrawal method, which has a higher risk of pregnancy, is widely used due to women's lack of voice. On the other hand, among Buddhist women, many women use almost irreversible sterilization methods to eliminate the risk of pregnancy; at the same time, contraceptive methods with low pregnancy risks, such as the pill and injection, are also widely used.
+
+
+```{r  104,fig.cap="Percentage of different methods with group by number of child",message=FALSE,echo=FALSE,warning=FALSE}
+new2 <- newdata |> filter(Main == "0" | Main == "1" | Main == "2" | Main == "3" | Main == "4+") |> filter(Methods != "page" & Methods != "area" & Methods != "Weighted number of women" & Methods != "Total percent" & Methods != "Currently using any method" ) |> mutate(per = as.numeric(per))
+
+new2 |> ggplot(aes(x = per, y = Methods,fill=Main)) + geom_col(aes(x = per, y = Methods,fill = Main),position = "dodge")+ theme_classic() + labs(x="Percentage(%)",y = "Methods", fill = "Number of child")
+```
+This graph simply and intuitively shows the relationship between contraceptive use and the number of children. We hope to use this picture to roughly analyze the fertility desire of Thai women around 1980, or the number of children they expect. As shown, most women who did not use any contraception were childless; the majority of women who used effective contraception had already had three children. From this, we can conclude that the number of children expected by Thai women at that time was three. Interestingly, women with four or more children were also more likely to avoid contraception. We believe this was due to the fact that Thailand was a de-industrialized agricultural country at the time, and the rural population was much larger than the urban population; in this case, the population was an important labor resource, and for most rural populations, households More children means more family productivity in the future, so many women would like to have more than three offspring.
+
+```{r}
+
+```
+
+\newpage
+# Discussion
+
+In this article, we visualize and analyze the contraceptive-choice habits of married women aged 15-44 in Thailand during the 1980s by extracting some data from TDHS 1987[@DHS]. We first extracted Table 4.8 from the TDHS report, first used the simulator method to simulate the data, then converted the graphs into processable data and transformed it into a visual data graph raw_data.cvs by cleaning and sorting. By classifying and comparing the contraceptive habits of different groups of women, we have drawn several valid conclusions: Thailand in the 1980s, as a sub-developed country, was a sub-developed and agricultural country with a lot of rural land; Thailand at that time was based on Buddhism. is the predominant religion and the majority of the population has a low level of education. Under this circumstance, with the entry and influence of the advanced market economy in the West, a large number of new private clinics and pharmacies were born in Thailand, which promoted the local popularity of contraceptives, injections, IUD and other periodic contraceptive methods. As a sub-developed country, Thailand's local cultural environment and religious beliefs determine that contraception is a demand that cannot be ignored in the social environment of the country. Therefore, the promotion of contraceptive methods must have had a certain impact on the local economy at that time. On the other hand, as an agricultural country, some women also consider producing a large number of offspring to supplement the family's labor force.
+
+Analysis and research on contraceptive measures, infant mortality and other data can effectively analyze the local cultural environment and economic situation from the side. However, the report only conducted analysis and research on contraceptive measures, so the evidence for some of the views in the article is based on common-sense inferences. Such inferences are often incomplete under more rigorous academic discussions. We believe that the research on the local human environment and economic situation will be more rigorous and convincing if the research on infant mortality and women's marriage rate is added.
+
+\newpage
+# Appendix
+
+```{r child='datasheet_template.Rmd'}
+
+```
+
+
+\newpage
+# References
