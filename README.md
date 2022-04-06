@@ -2,6 +2,15 @@
 
 This repo contains the necessary file and output results of Further Data Analysis Project based on TDHS, 1987
 
+Abstract:      
+    This article uses the data from the 1987 Thailand Demographic and Health Survey (hereinafter
+referred to as TDHS), and extracts Table 4.8–Percent distribution of currently married woman aged 15-44
+according to the contraceptive method currently used, by selected characteristics on page 75. , classify
+and integrate the data in the table through statistical methods, aiming to restore the basis of the research
+content in the paper, and further combine the social background and cultural environment at that time
+to analyze the research results and draw conclusions.
+Introduction
+
 It is organised as follows:
 
 input:/
